@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getDatabase, ref, get } from 'firebase/database';
-import { database } from '../../server/firebase'; // Adjust the import path as needed
+import { database } from '../../server/firebase'; 
 import '../../server/public/style/profile.scss';
 import Navbar from './NavBar.jsx';
 import { useAuth } from './AuthContext.jsx'
@@ -50,7 +50,6 @@ const Profile = () => {
                         <p>First Name: {userData.firstName}</p>
                         <p>Last Name: {userData.lastName}</p>
                         <p>Address: {userData.address}</p>
-                        {/* Add more fields as needed */}
                     </div>
                 )}
             </div>

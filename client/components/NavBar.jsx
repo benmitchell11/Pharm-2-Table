@@ -3,25 +3,48 @@ import { Link } from 'react-router-dom';
 import '../../server/public/style/navbar.scss';
 import { useAuth } from './AuthContext.jsx';
 import { ref, get } from 'firebase/database';
-import { database } from '../../server/firebase'; // Adjust the import path as needed
+import { database } from '../../server/firebase'; 
 import { signOut } from 'firebase/auth';
 import { auth } from '../../server/firebase';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+import UserMenu from './UserMenu.jsx';
+import WishlistMenu from './WishlistMenu.jsx';
+import '../../server/public/style/usermenu.scss';
+import '../../server/public/style/wishlistmenu.scss';
+import '../../server/public/style/suppliermenu.scss';
+import CartMenu from './CartMenu.jsx';
+import SupplierMenu from './SupplierMenu.jsx';
+import AdminMenu from './AdminMenu.jsx';
 
 const Navbar = () => {
     const { currentUser } = useAuth();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [flyoutVisible, setFlyoutVisible] = useState(null);
     const navigate = useNavigate();
 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-            navigate('/');// Redirect or perform any additional actions after sign-out
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
+
+    const handleUsermenuToggle = () => {
+        setFlyoutVisible(flyoutVisible === 'usermenu' ? null : 'usermenu');
+        console.log(userData)
+    };
+
+    const handleWishlistMenuToggle = () => {
+        setFlyoutVisible(flyoutVisible === 'wishlist' ? null : 'wishlist');
+    };
+
+    const handleCartMenuToggle = () => {
+        setFlyoutVisible(flyoutVisible === 'cart' ? null : 'cart');
+    };
+
+    const handleSupplierMenuToggle = () => {
+        setFlyoutVisible(flyoutVisible === 'supplier' ? null : 'supplier');
+    };
+
+    const handleAdminMenuToggle = () => {
+        setFlyoutVisible(flyoutVisible === 'admin' ? null : 'admin');
     };
 
     useEffect(() => {
@@ -54,36 +77,99 @@ const Navbar = () => {
                 <img src="img/logo.png" className="logo" id="logo" alt="Logo" />
             </div>
             <div id="links-container">
-                <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/shop">Shop</Link></li>
-                    <li><Link to="/contact">Contact</Link></li>
-                    <li><Link to="/profile">Profile</Link></li>
-                    {loading && <li>Loading user data...</li>}
-                    {error && <li>Error fetching user data: {error}</li>}
-                    {userData && (
-                        <>
-                            {userData.isAdmin && <li><Link to="/admin-menu">Admin</Link></li>}
-                            <li>Welcome, {userData.firstName || userData.email}</li>
-                            {/* Add a sign-out button here */}
-                        </>
-                    )}
-                    {!currentUser &&(
-                        <>
-                            <li><Link to="/signin">Sign In</Link></li>
-                            <li><Link to="/registration">Register</Link></li>
-                        </>
-                    )}
-                </ul>
-            </div>
-            <div className="signout-container">
-                {!currentUser && (
-                    <button type="button" className="signout-button" onClick={handleSignOut}>Sign Out</button>
-                )}   
+                <Link to="/" className="link">Home</Link>
+                <Link to="/prescriptions" className="link">Prescriptions</Link>
+                <Link to="/shop" className="link">Shop</Link>
+                <Link to="/contact" className="link">Contact</Link>
+                <Link to="/about" className="link">About</Link>
             </div>
             <div id="buttons-container">
-                <button type="button" className="user-button"><img src="img/user.png" className="user-icon" alt="User Icon"/></button>
-                <button type="button" className="cart-button"><img src="img/cart.png" className="cart-icon" alt="Cart Icon"/></button>
+                <div className="flyout-container">
+                    <button
+                        type="button"
+                        className="menu-button"
+                        onClick={handleUsermenuToggle}
+                    >
+                        <img src="img/user.png" className="icon" alt="User Icon" />
+                        <span className="button-title">Profile</span>
+                    </button>
+                    {flyoutVisible === 'usermenu' && (
+                        <UserMenu
+                            userData={userData}
+                            onClose={() => setFlyoutVisible(null)}
+                        />
+                    )}
+                </div>
+                <div className="flyout-container">
+                    <button
+                        type="button"
+                        className="menu-button"
+                        onClick={handleWishlistMenuToggle}
+                    >
+                        <img src="img/wishlist.png" className="icon" alt="User Icon" />
+                        <span className="button-title">Wishlist</span>
+                    </button>
+                    {flyoutVisible === 'wishlist' && (
+                        <WishlistMenu
+                            userData={userData}
+                            onClose={() => setFlyoutVisible(null)}
+                        />
+                    )}
+                </div>
+                <div className="flyout-container">
+                    <button
+                        type="button"
+                        className="menu-button"
+                        onClick={handleCartMenuToggle}
+                    >
+                        <img src="img/cart.png" className="icon" alt="Cart Icon" />
+                        <span className="button-title">Cart</span>
+                    </button>
+                    {flyoutVisible === 'cart' && (
+                        <CartMenu
+                            userData={userData}
+                            onClose={() => setFlyoutVisible(null)}
+                        />
+                    )}
+                </div>
+                {currentUser && (
+                    <div className="flyout-container">
+                        {userData && (userData.isAdmin || userData.isSupplier) && (
+                            <button
+                                type="button"
+                                className="menu-button"
+                                onClick={handleSupplierMenuToggle}
+                            >
+                                <img src="img/supplier.png" className="icon" alt="Supplier Icon" />
+                                <span className="button-title">Supplier</span>
+                            </button>
+                        )}
+                        {flyoutVisible === 'supplier' && (
+                            <SupplierMenu
+                                userData={userData}
+                                onClose={() => setFlyoutVisible(null)}
+                            />
+                        )}
+                    </div>
+                )}
+                {currentUser && userData && userData.isAdmin && (
+                    <div className="flyout-container">
+                        <button
+                            type="button"
+                            className="menu-button"
+                            onClick={handleAdminMenuToggle}
+                        >
+                            <img src="img/admin.png" className="icon" alt="Admin Icon" />
+                            <span className="button-title">Admin</span>
+                        </button>
+                        {flyoutVisible === 'admin' && (
+                            <AdminMenu
+                                userData={userData}
+                                onClose={() => setFlyoutVisible(null)}
+                            />
+                        )}
+                    </div>
+                )}
             </div>
         </nav>
     );

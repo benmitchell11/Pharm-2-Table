@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../server/firebase'; // Adjust the path as per your project structure
+import { auth } from '../../server/firebase';
 
 const AuthContext = createContext();
 

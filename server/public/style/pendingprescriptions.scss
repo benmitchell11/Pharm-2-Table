@@ -1,0 +1,15 @@
+.content {
+    margin-top: 150px; /* Adjust as needed */
+    padding: 20px;
+}
+
+.view-file {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        color: darkblue; /* Change to the desired darker blue color */
+    }
+
+}

@@ -1,4 +1,26 @@
-.content {
-    margin-top: 150px; /* Adjust as needed */
-    padding: 20px;
+
+.admin-content {
+    position: absolute;
+    top: 100%;
+    z-index: 1;
+    right: 0px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 150px;
+    margin-top: 10px;
+}
+
+.admin-button {
+    display: block;
+    width: 140px;
+    height: 40px;
+    background: transparent;
+    border: none;
+}
+
+.admin-button:hover {
+    background-color: #ccc; /* Change to the grey color you prefer */
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../server/firebase'; // Adjust the path as per your project structure
+import { auth } from '../../server/firebase'; 
 import { Redirect } from 'react-router-dom';
 import Navbar from './NavBar.jsx';
 import '../../server/public/style/signin.scss';
@@ -18,7 +18,7 @@ const SignIn = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('User signed in:', userCredential.user);
 
-            // Redirect to home page after successful sign-in
+            
             navigate('/');
         } catch (error) {
             setError(error.message);
@@ -27,8 +27,7 @@ const SignIn = () => {
 
     return (
         <div>
-            <div>
-                <Navbar /> 
+            <div className="modal">
                 <div className="content">
                     <h2>Sign In</h2>
                     <form onSubmit={handleSignIn}>

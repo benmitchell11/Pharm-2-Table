@@ -39,30 +39,62 @@ nav {
     padding-right: 100px;
 }
 
-
-
-.cart-button {
-    background-color: transparent;
+#buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute; /* Position absolutely */
+    right: 0; /* Align to the right */
+    top: 20; /* Align to the top */
+    margin-right: 50px; /* Add some margin from the right edge */
 }
 
-.user-button {
+
+.menu-button {
     background-color: transparent;
+    width: 80px;
+    height: 80px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
-.cart-icon {
+.flyout-container {
+    position: relative;
+    border-radius: 0%;
+    left: 20px;
+}
+
+
+
+.icon {
     height: 40px;
     width: auto;
-    padding: 10px;
 }
 
-.user-icon {
-    height: 40px;
-    width: auto;
-    padding: 10px;
-}
 
 #links-container {
     display: flex;
     justify-content: left;
     align-items: center;
+}
+
+.button-title {
+    color: white;
+    text-align: center;
+    display: block;
+    margin-top: 1px; /* Adjust as needed */
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    font-size: 20px;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
 }
