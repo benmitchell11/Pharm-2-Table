@@ -16,7 +16,7 @@ const ManageUsers = () => {
                 const usersSnapshot = await get(usersRef);
 
                 if (usersSnapshot.exists()) {
-                    const usersArray = Object.values(usersSnapshot.val());
+                    const usersArray = Object.entries(usersSnapshot.val()).map(([id, userData]) => ({ id, ...userData }));
                     setUsers(usersArray);
                 } else {
                     console.log('No users found');
@@ -47,6 +47,7 @@ const ManageUsers = () => {
                                 <th>Email</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
+                                <th></th>
                                 {/* Add more user details as needed */}
                             </tr>
                         </thead>
@@ -57,6 +58,7 @@ const ManageUsers = () => {
                                     <td>{user.email}</td>
                                     <td>{user.firstName}</td>
                                     <td>{user.lastName}</td>
+                                    <td><button>Delete User</button></td>
                                     {/* Add more user details as needed */}
                                 </tr>
                             ))}

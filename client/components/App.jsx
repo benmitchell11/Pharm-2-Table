@@ -18,6 +18,9 @@ import AddSupplier from './AddSupplier.jsx';
 import Contact from './Contact.jsx';
 import About from './About.jsx'
 import Product from './Product.jsx';
+import SupplierRegistration from './SupplierRegistration.jsx';
+import Wishlist from './Wishlist.jsx';
+import Cart from './Cart.jsx'
 
 function App () {
   return (
@@ -40,6 +43,9 @@ function App () {
             <Route path="/contact" exact element={<Contact />} />
             <Route path="/about" exact element={<About />} />
             <Route path="/product/:id" exact element={<Product />} />
+            <Route path="/supplier-registration" exact element={<SupplierRegistration />} />
+            <Route path="/wishlist/:id" exact element={<Wishlist />} />
+            <Route path="/cart/:id" exact element={<Cart />} />
         </Routes>
     </>
   );

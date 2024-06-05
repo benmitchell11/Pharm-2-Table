@@ -23,8 +23,15 @@ const Navbar = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [flyoutVisible, setFlyoutVisible] = useState(null);
+    const [pendingApplications, setPendingApplications] = useState(0);
+    const [pendingPrescriptions, setPendingPrescriptions] = useState(0);
+    const [pendingSupplierApplications, setPendingSupplierApplications] = useState(0);
+    const [wishlistItems, setWishlistItems] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
 
+    const totalAdminPendingCount = pendingApplications + pendingSupplierApplications;
+    const adminBubbleContent = totalAdminPendingCount > 9 ? '9+' : totalAdminPendingCount.toString();
 
     const handleUsermenuToggle = () => {
         setFlyoutVisible(flyoutVisible === 'usermenu' ? null : 'usermenu');
@@ -66,10 +73,96 @@ const Navbar = () => {
             }
         };
 
+        const fetchWishlistItems = async () => {
+            if (currentUser) {
+                try {
+                    const wishlistRef = ref(database, `wishlists/${currentUser.uid}/items`);
+                    const wishlistSnapshot = await get(wishlistRef);
+
+                    if (wishlistSnapshot.exists()) {
+                        const wishlistData = wishlistSnapshot.val();
+                        console.log('Wishlist Items:', wishlistData);
+                        setWishlistItems(Object.values(wishlistData));
+                    } else {
+                        setWishlistItems([]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching wishlist items:', error);
+                }
+            }
+        };
+
+        const fetchCartItems = async () => {
+            if (currentUser) {
+                try {
+                    const cartRef = ref(database, `carts/${currentUser.uid}/items`);
+                    const cartSnapshot = await get(cartRef);
+
+                    if (cartSnapshot.exists()) {
+                        const cartData = cartSnapshot.val();
+                        console.log('Cart Items:', cartData);
+                        setCartItems(Object.values(cartData));
+                    } else {
+                        setCartItems([]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching cart items:', error);
+                }
+            }
+        };
+
         if (currentUser) {
             fetchUserData();
+            fetchWishlistItems();
+            fetchCartItems();
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        const fetchPendingApplications = async () => {
+            try {
+                const applicationsRef = ref(database, 'applications');
+                const snapshot = await get(applicationsRef);
+                if (snapshot.exists()) {
+                    const applications = snapshot.val();
+                    const pendingCount = Object.values(applications).filter(app => app.status === 'Pending').length;
+                    setPendingApplications(pendingCount);
+                }
+            } catch (error) {
+                console.error('Error fetching pending applications:', error);
+            }
+        };
+
+        const fetchPendingPrescriptions = async () => {
+            try {
+                const prescriptionsRef = ref(database, 'prescriptions');
+                const snapshot = await get(prescriptionsRef);
+                if (snapshot.exists()) {
+                    const prescriptions = snapshot.val();
+                    const pendingCount = Object.values(prescriptions).filter(app => app.status === 'Pending').length;
+                    setPendingPrescriptions(pendingCount);
+                }
+            } catch (error) {
+                console.error('Error fetching pending prescriptions:', error)
+            }
+        }
+
+        const fetchPendingSupplierApplications = async () => {
+            try {
+                const supplierApplicationsRef = ref(database, 'supplierApplications');
+                const snapshot = await get(supplierApplicationsRef);
+                if (snapshot.exists()) {
+                    const supplierApplications = snapshot.val();
+                    const pendingCount = Object.values(supplierApplications).filter(app => app.status === 'Pending').length;
+                    setPendingSupplierApplications(pendingCount)
+                }
+            } catch (error) {
+                console.error('Error fetching pending supplier applications', error)
+            }
+        }
+
+        fetchPendingApplications(), fetchPendingPrescriptions(), fetchPendingSupplierApplications();
+    }, []);
 
     return (
         <nav id="navbar">
@@ -108,6 +201,9 @@ const Navbar = () => {
                     >
                         <img src="img/wishlist.png" className="icon" alt="User Icon" />
                         <span className="button-title">Wishlist</span>
+                        {wishlistItems.length > 0 && (
+                            <div className="notification-bubble">{wishlistItems.length > 9 ? '9+' : wishlistItems.length}</div>
+                        )}
                     </button>
                     {flyoutVisible === 'wishlist' && (
                         <WishlistMenu
@@ -124,6 +220,9 @@ const Navbar = () => {
                     >
                         <img src="img/cart.png" className="icon" alt="Cart Icon" />
                         <span className="button-title">Cart</span>
+                        {cartItems.length > 0 && (
+                            <div className="notification-bubble">{cartItems.length > 9 ? '9+' : cartItems.length}</div>
+                        )}
                     </button>
                     {flyoutVisible === 'cart' && (
                         <CartMenu
@@ -142,6 +241,9 @@ const Navbar = () => {
                             >
                                 <img src="img/supplier.png" className="icon" alt="Supplier Icon" />
                                 <span className="button-title">Supplier</span>
+                                {pendingPrescriptions > 0 && (
+                                <div className="notification-bubble">{pendingPrescriptions}</div>
+                            )}
                             </button>
                         )}
                         {flyoutVisible === 'supplier' && (
@@ -161,6 +263,9 @@ const Navbar = () => {
                         >
                             <img src="img/admin.png" className="icon" alt="Admin Icon" />
                             <span className="button-title">Admin</span>
+                            {(pendingApplications > 0 || pendingSupplierApplications > 0) && (
+                                <div className="notification-bubble">{adminBubbleContent}</div>
+                            )}
                         </button>
                         {flyoutVisible === 'admin' && (
                             <AdminMenu

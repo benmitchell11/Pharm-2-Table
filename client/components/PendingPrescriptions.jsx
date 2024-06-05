@@ -78,17 +78,35 @@ const PendingPrescriptions = () => {
             <NavBar />
             <div className="content">
                 <h2>Pending Prescriptions</h2>
-                <ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Prescription ID</td>
+                            <td>First Name</td>
+                            <td>Last Name</td>
+                            <td>Request Date</td>
+                            <td>File</td>
+                            <td>Approve / Reject</td>
+                        </tr>
+                    </thead>
+                    <tbody>
                     {pendingPrescriptions.map(prescription => (
-                        <li key={prescription.id}>
-                            Prescription ID: {prescription.id}<br />
-                            Patient: {prescription.userFirstName} {prescription.userLastName}<br />
-                            Prescription Date: {prescription.prescriptionDate}<br />
-                            <a className="view-file" onClick={() => openModal(prescription)}>View Prescription File</a><br />
-                            <button onClick={() => handleApprovePrescription(prescription.id)}>Approve</button>
-                            <button onClick={() => handleRejectPrescription(prescription.id)}>Reject</button>
-                        </li>
+                        <tr>
+                            <td>{prescription.id}</td>
+                            <td>{prescription.userFirstName}</td>
+                            <td>{prescription.userLastName}</td>
+                            <td>{prescription.prescriptionDate}</td>
+                            <td><a className="view-file" onClick={() => openModal(prescription)}>View Prescription File</a><br /></td>
+                            <td>
+                                <button onClick={() => handleApprovePrescription(prescription.id)}>Approve</button>
+                                <button onClick={() => handleRejectPrescription(prescription.id)}>Reject</button>
+                            </td>
+                        </tr>       
                     ))}
+                    </tbody>
+                </table>
+                <ul>
+                    
                 </ul>
                 {selectedPrescription && (
                     <PrescriptionFile
@@ -96,6 +114,10 @@ const PendingPrescriptions = () => {
                         closeModal={closeModal}
                     />
                 )}
+                <br />
+                <h2>Approved Prescriptions</h2>
+                <br />
+                <h2>Rejected Prescriptions</h2>
             </div>
         </div>
     );

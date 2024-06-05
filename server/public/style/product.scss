@@ -1,4 +1,121 @@
 .content {
-    margin-top: 150px; /* Adjust as needed */
     padding: 20px;
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    img {
+        max-width: 500px;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    p {
+        margin-bottom: 10px;
+    }
+
+    .product-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+
+        .product-image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .product-info {
+            h3 {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+
+            .product-price {
+                font-weight: bold;
+                color: #ff5733;
+                margin-bottom: 10px;
+            }
+
+            .product-description {
+                margin-bottom: 10px;
+            }
+        }
+    }
 }
+
+.quantity-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    width: 200px;
+}
+
+.label {
+    margin-right: 10px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-input {
+    height: 40px;
+    -webkit-appearance: textfield; /* Remove default arrows on Chrome and Safari */
+    -moz-appearance: textfield; /* Remove default arrows on Firefox */
+    appearance: textfield; 
+    width: 50px; /* Adjust width as needed */
+    border: none;
+    margin-left: 50px;
+    outline: none; /* Optional: Remove outline when focused */
+    text-align: center;
+}
+
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Remove spin buttons on WebKit browsers */
+}
+
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    right: 100%;
+}
+
+.quantity-button {
+    margin: 0 5px;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.quantity-button:hover {
+    background-color: #f0f0f0;
+}
+
+button.wishlist-outline {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button.wishlist-filled {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+

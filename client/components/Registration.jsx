@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { auth, database, storage} from '../../server/firebase'; 
+import { auth, database, storage } from '../../server/firebase'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDatabase, ref, set, push } from 'firebase/database';
-import {  uploadBytes, getDownloadURL, ref as sRef } from 'firebase/storage';
+import { ref, set } from 'firebase/database';
+import { uploadBytes, getDownloadURL, ref as sRef } from 'firebase/storage';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Navbar from './NavBar.jsx';
-
+import '../../server/public/style/registration.scss';
 
 const Registration = () => {
     const [email, setEmail] = useState('');
@@ -15,48 +17,41 @@ const Registration = () => {
     const [lastName, setLastName] = useState('');
     const [address, setAddress] = useState('');
     const [imageFile, setImageFile] = useState(null);
+    const [showPendingMessage, setShowPendingMessage] = useState(false);
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User registered:', userCredential.user);
+            // Register the user without signing in
+            const response = await axios.post('/api/createUser', {
+                email,
+                password,
+                firstName,
+                lastName,
+                address,
+                imageFile,
 
-            const storageRef = sRef(storage, `images/${userCredential.user.uid}/${imageFile.name}`);
-            await uploadBytes(storageRef, imageFile);
-
-            
-            const imageUrl = await getDownloadURL(storageRef);
-            console.log('Image uploaded:', imageUrl);
-
-    
-            const userData = {
-                email: userCredential.user.email,
-                uid: userCredential.user.uid,
-                firstName: firstName,
-                lastName: lastName,
-                address: address,
-                imageUrl: imageUrl,
-                isAdmin: false,
-                isVerified: false,
-
-                
-            };
+            });
     
             
-            await set(ref(database, 'users/' + userCredential.user.uid), userData);
-            console.log('User data added to Realtime Database');
     
-            navigate('/');
+            setShowPendingMessage(true);
         } catch (error) {
             setError(error.message);
         }
     };
+    
+    
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         setImageFile(selectedFile);
+    };
+
+    const handleClosePopup = () => {
+        setShowPendingMessage(false);
+        navigate('/'); // Redirect to the home page
     };
 
     return (
@@ -79,20 +74,20 @@ const Registration = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <input 
-                            type="firstName"
-                            placeholder='First Name'
+                            type="text"
+                            placeholder="First Name"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         />
                         <input 
-                            type="lastName"
-                            placeholder='Last Name'
+                            type="text"
+                            placeholder="Last Name"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         />
                         <input 
-                            type="address"
-                            placeholder='Address'
+                            type="text"
+                            placeholder="Address"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                         />
@@ -101,11 +96,20 @@ const Registration = () => {
                             accept="image/*"
                             onChange={handleFileChange}
                         />
-                        <button type="submit">Register</button>
+                        <button type="button" onClick={handleRegister}>Register</button>
                     </form>
+                    {error && <div className="error-message">{error}</div>}
                 </div>
             </div>
-            {error && <div>{error}</div>}
+            {showPendingMessage && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h3>Application Pending</h3>
+                        <p>Your application is still pending. You will receive an email once it is approved.</p>
+                        <button onClick={handleClosePopup}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

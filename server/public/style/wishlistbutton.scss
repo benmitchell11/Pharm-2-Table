@@ -1,0 +1,22 @@
+button.wishlist-outline {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-image: url('../img/heart1.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button.wishlist-filled {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-image: url('../img/heart2.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+

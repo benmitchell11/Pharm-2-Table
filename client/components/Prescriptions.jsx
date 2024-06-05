@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { storage, database, auth } from '../../server/firebase'; 
+import { storage, database } from '../../server/firebase'; 
 import { useAuth } from './AuthContext.jsx';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref, push, set, get } from 'firebase/database';
@@ -9,6 +9,7 @@ const Prescriptions = () => {
     const [prescriptionFile, setPrescriptionFile] = useState(null);
     const [uploadError, setUploadError] = useState(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [urgent, setUrgent] = useState(false); // State for Urgent checkbox
     const { currentUser } = useAuth();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -48,18 +49,14 @@ const Prescriptions = () => {
             setUploadError('Please select a file to upload.');
             return;
         }
-        console.log(userData)
 
         try {
-            
             const storageRef = sRef(storage, `prescriptions/${currentUser.uid}/${prescriptionFile.name}`);
             await uploadBytes(storageRef, prescriptionFile);
 
-            
             const imageUrl = await getDownloadURL(storageRef);
             console.log('Image uploaded:', imageUrl);
 
-           
             const prescriptionsRef = ref(database, 'prescriptions');
             const newPrescriptionRef = push(prescriptionsRef);
             await set(newPrescriptionRef, {
@@ -69,8 +66,9 @@ const Prescriptions = () => {
                 userLastName: userData.lastName,
                 imageURL: imageUrl,
                 prescriptionDate: new Date(),
+                status: "Pending",
+                urgent: urgent, // Include urgent status in the prescription data
             });
-            
             
             setUploadSuccess(true);
         } catch (error) {
@@ -82,8 +80,19 @@ const Prescriptions = () => {
         <div>
             <Navbar />
             <div className='content'>
-                <h1>Prescriptions</h1>
+                <h1>Prescription Request</h1>
                 <input type="file" onChange={handleFileChange} />
+                <div>
+                    <label>
+                        Urgent:
+                        <input
+                            type="checkbox"
+                            checked={urgent}
+                            onChange={(e) => setUrgent(e.target.checked)}
+                        />
+                    </label>
+                    {urgent && <p>This Will Cost An Extra 5 Dollars</p>}
+                </div>
                 <button onClick={handleUpload}>Upload Prescription</button>
                 {uploadError && <p>Error: {uploadError}</p>}
                 {uploadSuccess && <p>Upload successful!</p>}

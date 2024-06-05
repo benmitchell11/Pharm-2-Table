@@ -1,6 +1,7 @@
 import React from 'react';
 import NavBar from './NavBar.jsx';
-import '../../server/public/style/contact.scss'
+import '../../server/public/style/contact.scss';
+import { Link } from 'react-router-dom';
 
 const Contact = () => {
     return (
@@ -12,7 +13,7 @@ const Contact = () => {
                 <p>Phone: +1 234 567 890</p>
                 <p>Address: 123 Main St, City, Country</p>
                 <p>A list of our suppliers and theyre contact information can be found <a>here</a> </p>
-                <p>If you are a supplier and would like to join please fill out this form</p>
+                <p>If you are a supplier and would like to join please fill out this <Link to="/supplier-registration">form</Link></p>
             </div>
         </div>
     );
